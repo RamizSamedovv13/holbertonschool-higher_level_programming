@@ -1,0 +1,3 @@
+def print_list_integer(my_list=[]):
+    for i in range(6):
+        print("{}".format(i))
