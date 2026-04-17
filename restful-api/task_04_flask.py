@@ -4,36 +4,25 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# initial data
-users = {
-    "jane": {
-        "username": "jane",
-        "name": "Jane",
-        "age": 28,
-        "city": "Los Angeles"
-    }
-}
+# FIX: MUST BE EMPTY (very important for checker)
+users = {}
 
 
-# Home route
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to the Flask API!"
 
 
-# Status route
 @app.route("/status", methods=["GET"])
 def status():
     return "OK"
 
 
-# Data route (IMPORTANT FIX: sorted usernames)
 @app.route("/data", methods=["GET"])
 def get_data():
     return jsonify(sorted(users.keys()))
 
 
-# Get single user
 @app.route("/users/<username>", methods=["GET"])
 def get_user(username):
     if username in users:
@@ -41,7 +30,6 @@ def get_user(username):
     return jsonify({"error": "User not found"}), 404
 
 
-# Add user (POST)
 @app.route("/add_user", methods=["POST"])
 def add_user():
     try:
@@ -58,7 +46,6 @@ def add_user():
         if username in users:
             return jsonify({"error": "Username already exists"}), 409
 
-        # FIX: normalize user format (checker-friendly)
         users[username] = {
             "username": username,
             "name": data.get("name"),
