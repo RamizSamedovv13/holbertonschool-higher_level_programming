@@ -1,9 +1,10 @@
-#!/usr/bin/python3
-import requests
-import sys
+[200~#!/usr/bin/python3
+  """Get X-Request-Id from response header"""
 
-if __name__ == "__main__":
-    url = sys.argv[1]
-    response = requests.get(url)
+  import requests
+  import sys
 
-    print(response.headers.get("X-Request-Id"))
+  if __name__ == "__main__":
+      url = sys.argv[1]
+      response = requests.get(url)
+      print(response.headers.get("X-Request-Id"))
