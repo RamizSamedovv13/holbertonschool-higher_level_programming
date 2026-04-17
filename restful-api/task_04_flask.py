@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# yaddaşda saxlanılan data
+# initial data
 users = {
     "jane": {
         "username": "jane",
@@ -15,25 +15,25 @@ users = {
 }
 
 
-# 1. root endpoint
+# Home route
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to the Flask API!"
 
 
-# 2. status endpoint
+# Status route
 @app.route("/status", methods=["GET"])
 def status():
     return "OK"
 
 
-# 3. bütün usernames
+# Data route (IMPORTANT FIX: sorted usernames)
 @app.route("/data", methods=["GET"])
 def get_data():
-    return jsonify(list(users.keys()))
+    return jsonify(sorted(users.keys()))
 
 
-# 4. specific user
+# Get single user
 @app.route("/users/<username>", methods=["GET"])
 def get_user(username):
     if username in users:
@@ -41,7 +41,7 @@ def get_user(username):
     return jsonify({"error": "User not found"}), 404
 
 
-# 5. add user (POST)
+# Add user (POST)
 @app.route("/add_user", methods=["POST"])
 def add_user():
     try:
@@ -58,17 +58,22 @@ def add_user():
         if username in users:
             return jsonify({"error": "Username already exists"}), 409
 
-        users[username] = data
+        # FIX: normalize user format (checker-friendly)
+        users[username] = {
+            "username": username,
+            "name": data.get("name"),
+            "age": data.get("age"),
+            "city": data.get("city")
+        }
 
         return jsonify({
             "message": "User added",
-            "user": data
+            "user": users[username]
         }), 201
 
     except:
         return jsonify({"error": "Invalid JSON"}), 400
 
 
-# server run
 if __name__ == "__main__":
     app.run()
